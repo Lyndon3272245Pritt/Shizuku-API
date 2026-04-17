@@ -1,3 +1,5 @@
 /build
 /.idea
 *.iml
+# Ignore local Android Studio navigation files
+*.navigation.xml
