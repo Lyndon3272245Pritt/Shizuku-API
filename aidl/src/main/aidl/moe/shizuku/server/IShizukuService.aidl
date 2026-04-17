@@ -1,48 +1,59 @@
+// IShizukuService.aidl
 package moe.shizuku.server;
 
 import moe.shizuku.server.IRemoteProcess;
-import moe.shizuku.server.IShizukuApplication;
-import moe.shizuku.server.IShizukuServiceConnection;
 
+/**
+ * Main Shizuku service interface.
+ * Provides privileged operations to client applications that have been granted permission.
+ */
 interface IShizukuService {
 
-    int getVersion() = 2;
+    /**
+     * Returns the version code of the running Shizuku service.
+     */
+    int getVersion() = 1;
 
-    int getUid() = 3;
+    /**
+     * Returns the uid of the Shizuku server process (typically 0 for root or 2000 for ADB).
+     */
+    int getUid() = 2;
 
-    int checkPermission(String permission) = 4;
+    /**
+     * Returns the Linux user ID of the calling application.
+     */
+    int getCallingUid() = 3;
 
-    IRemoteProcess newProcess(in String[] cmd, in String[] env, in String dir) = 7;
+    /**
+     * Check if the calling package has been granted Shizuku permission.
+     *
+     * @param packageName the package name to check
+     * @param version     the API version requested by the client
+     * @return PackageManager.PERMISSION_GRANTED or PackageManager.PERMISSION_DENIED
+     */
+    int checkPermission(String packageName, int version) = 4;
 
-    String getSELinuxContext() = 8;
+    /**
+     * Execute a command in a privileged shell and return a handle to the remote process.
+     *
+     * @param cmd         command and arguments
+     * @param env         environment variables (key=value), may be null
+     * @param dir         working directory, may be null
+     * @return an IRemoteProcess representing the spawned process
+     */
+    IRemoteProcess newProcess(in String[] cmd, in String[] env, String dir) = 5;
 
-    String getSystemProperty(in String name, in String defaultValue) = 9;
+    /**
+     * Attach a client application to the Shizuku service.
+     * Must be called before using other privileged APIs.
+     *
+     * @param packageName the calling application's package name
+     * @param version     the API version used by the client
+     */
+    void attachApplication(String packageName, int version) = 6;
 
-    void setSystemProperty(in String name, in String value) = 10;
-
-    int addUserService(in IShizukuServiceConnection conn, in Bundle args) = 11;
-
-    int removeUserService(in IShizukuServiceConnection conn, in Bundle args) = 12;
-
-    void requestPermission(int requestCode) = 14;
-
-    boolean checkSelfPermission() = 15;
-
-    boolean shouldShowRequestPermissionRationale() = 16;
-
-    void attachApplication(in IShizukuApplication application,in Bundle args) = 17;
-
-    void exit() = 100;
-
-    void attachUserService(in IBinder binder, in Bundle options) = 101;
-
-    oneway void dispatchPackageChanged(in Intent intent) = 102;
-
-    boolean isHidden(int uid) = 103;
-
-    oneway void dispatchPermissionConfirmationResult(int requestUid, int requestPid, int requestCode, in Bundle data) = 104;
-
-    int getFlagsForUid(int uid, int mask) = 105;
-
-    void updateFlagsForUid(int uid, int mask, int value) = 106;
- }
+    /**
+     * Request the service to exit. Only callable by privileged callers.
+     */
+    void exit() = 7;
+}
