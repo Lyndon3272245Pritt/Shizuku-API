@@ -1,32 +1,52 @@
 plugins {
-    id('com.android.library')
+    id 'com.android.library'
 }
 
 android {
-    namespace 'rikka.shizuku.api'
-    buildFeatures {
-        buildConfig false
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName project.rootProject.ext.get("shizuku_version")
+
+        consumerProguardFiles 'consumer-rules.pro'
     }
+
     buildTypes {
         release {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    publishing {
+        singleVariant('release') {
+)
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
-    api project(':aidl')
-    api project(':shared')
-
-    implementation 'androidx.annotation:annotation:1.3.0'
+    api project(':n    implementation 'androidx.annotation:annotation:1.7.1'
 }
 
-ext {
-    publishLibrary = true
-    POM_NAME = "Shizuku API - API"
-    POM_DESCRIPTION = "API of Shizuku and Sui."
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'dev.rikka.shizuku'
+                artifactId = 'api'
+                version = project.rootProject.ext.get("shizuku_version")
+            }
+        }
+    }
 }
