@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AIDL library manifest - no components needed here, just a placeholder -->
+<!-- Note: this module only provides AIDL interfaces and shared model classes -->
 <manifest />
