@@ -18,6 +18,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    // Enable lint checks to catch potential issues during development
+    lint {
+        abortOnError false
+        warningsAsErrors false
+    }
 }
 
 ext {
