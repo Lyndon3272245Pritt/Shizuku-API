@@ -3,3 +3,6 @@
 *.iml
 # Ignore local Android Studio navigation files
 *.navigation.xml
+# Ignore local properties and keystore files
+local.properties
+*.jks
